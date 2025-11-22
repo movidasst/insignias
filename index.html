@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- METADATOS PARA REDES SOCIALES (WhatsApp, LinkedIn, etc.) -->
+    <!-- METADATOS DE REDES SOCIALES -->
     <title>La Movida de SST DAO Network</title>
-    <meta name="description" content="Únete a la primera comunidad Blockchain de SST en Latinoamérica. Activa tu identidad digital y valida tus competencias.">
+    <meta name="description" content="Portal oficial de la Primera Comunidad Blockchain de SST en Latinoamérica. Activa tu identidad digital.">
     <meta property="og:title" content="La Movida de SST - DAO Network">
-    <meta property="og:description" content="Portal oficial de certificación digital descentralizada para profesionales de la seguridad y salud.">
+    <meta property="og:description" content="Valida tu trayectoria profesional con tecnología Blockchain.">
     <meta property="og:image" content="https://assets.poap.xyz/f7d50791-1f25-47f7-978c-b2c9fd7ad13d.png">
-    <meta property="og:type" content="website">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Configuración de colores de marca -->
+    <!-- Configuración de colores -->
     <script>
         tailwind.config = {
             theme: {
@@ -47,6 +46,7 @@
     <nav class="bg-white shadow-md border-b-4 border-brand sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-center md:justify-between gap-4">
             <div class="flex items-center gap-3">
+                <!-- LOGO AUMENTADO (w-20) -->
                 <img src="https://assets.poap.xyz/f7d50791-1f25-47f7-978c-b2c9fd7ad13d.png" alt="Logo Movida SST" class="w-20 h-20 rounded-full shadow-sm border border-gray-100">
                 <div class="text-center md:text-left">
                     <h1 class="font-bold text-lg md:text-xl text-gray-800 leading-none tracking-tight">La Movida de SST <br><span class="text-brand">DAO Network</span></h1>
@@ -302,7 +302,7 @@
 
                 web3auth = new window.Modal.Web3Auth({
                     clientId,
-                    web3AuthNetwork: "sapphire_mainnet",
+                    web3AuthNetwork: "sapphire_devnet", // Ajustado a tu entorno
                     privateKeyProvider,
                     uiConfig: {
                         appName: "La Movida de SST DAO",
