@@ -141,8 +141,32 @@
                 </div>
             </div>
 
+            <!-- NUEVO: TUS SUPERPODERES EN LA DAO -->
+            <div class="bg-gradient-to-br from-brand-light to-white rounded-xl shadow-sm border border-brand p-6 mb-8">
+                <h3 class="font-bold text-brand-dark mb-4 text-center uppercase tracking-widest text-xs">
+                    ✨ Beneficios de tu Identidad Digital
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="p-3 bg-white rounded-lg shadow-sm">
+                        <div class="text-2xl mb-2">📜</div>
+                        <h4 class="font-bold text-xs text-gray-800">Smart Contracts</h4>
+                        <p class="text-[10px] text-gray-500 mt-1">Reglas claras y automáticas. Nadie puede alterar tus logros o historial.</p>
+                    </div>
+                    <div class="p-3 bg-white rounded-lg shadow-sm">
+                        <div class="text-2xl mb-2">🗳️</div>
+                        <h4 class="font-bold text-xs text-gray-800">Poder de Voto</h4>
+                        <p class="text-[10px] text-gray-500 mt-1">Participa en encuestas vinculantes sobre el futuro de la comunidad.</p>
+                    </div>
+                    <div class="p-3 bg-white rounded-lg shadow-sm">
+                        <div class="text-2xl mb-2">🌍</div>
+                        <h4 class="font-bold text-xs text-gray-800">Acceso Global</h4>
+                        <p class="text-[10px] text-gray-500 mt-1">Tus certificaciones son válidas en cualquier parte del mundo Web3.</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- GALERÍA DE INSIGNIAS -->
-            <div class="mb-8">
+            <div class="mb-12">
                 <h3 class="text-center font-bold text-gray-700 mb-6 flex items-center justify-center gap-2">
                     <span>🏆</span> Insignias de la Primera Comunidad SST Web3
                 </h3>
@@ -336,7 +360,8 @@
 
                 web3auth = new window.Modal.Web3Auth({
                     clientId,
-                    web3AuthNetwork: "sapphire_devnet", // Ajustado a tu entorno
+                    // CONFIGURACIÓN CORREGIDA: Apuntando a la red de tu dashboard (Devnet)
+                    web3AuthNetwork: "sapphire_devnet", 
                     privateKeyProvider,
                     uiConfig: {
                         appName: "La Movida de SST DAO",
