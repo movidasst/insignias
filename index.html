@@ -259,13 +259,12 @@
         const CONFIG = {
             LINK_FORMULARIO: "https://forms.gle/YonRRv9MAtDieYFg8",
             
-            // Client ID Verificado
-            CLIENT_ID: "BDX3ujFfWCx4juzUyTS21GrYMI1yge8Qea0z_DiUqX5LnLFWX_X4ME-TAy_mQX406gMrSozYGr69xiAL-5yVhBo",
+            // Client ID Verificado (Nuevo para Mainnet)
+            CLIENT_ID: "BFlFKDs_QiNYNtU7iGzjUGIvMU0SNHBlKG0vqimhtaSd7PVtA2sPldVA_ySs3n3rLcgz30bZN2XRu1z1IhEsxTY",
             
             // --- ¡IMPORTANTE! VERIFICA ESTO EN TU DASHBOARD ---
-            // Si la whitelist está bien, el error es porque esta variable no coincide con tu Dashboard.
-            // Prueba cambiar a "sapphire_devnet" si estás probando, o "mainnet" si es cuenta antigua.
-            WEB3AUTH_NETWORK: "sapphire_devnet", 
+            // Cambiado a sapphire_mainnet para producción
+            WEB3AUTH_NETWORK: "sapphire_mainnet", 
 
             CHAIN: { 
                 chainNamespace: "eip155", 
@@ -334,7 +333,7 @@
                         Tu Whitelist está bien, pero la RED no coincide.<br>
                         <ul class="list-disc pl-4 mt-2 text-[11px] text-left text-gray-700 space-y-1">
                             <li>El código usa: <code>${CONFIG.WEB3AUTH_NETWORK}</code></li>
-                            <li>Tu Dashboard tiene otra red seleccionada (ej: <code>sapphire_devnet</code>).</li>
+                            <li>Tu Dashboard tiene otra red seleccionada (probablemente <code>sapphire_devnet</code>).</li>
                             <li><strong>Solución:</strong> Cambia la línea 372 del código para que coincida.</li>
                         </ul>
                     `;
