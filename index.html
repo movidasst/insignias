@@ -8,7 +8,7 @@
     <title>La Movida de SST DAO Network</title>
     <meta name="description" content="Únete a la primera comunidad Blockchain de SST en Latinoamérica. Activa tu identidad digital y valida tus competencias.">
     <meta property="og:title" content="La Movida de SST - DAO Network">
-    <meta property="og:image" content="https://assets.poap.xyz/f7d50791-1f25-47f7-978c-b2c9fd7ad13d.png">
+    <meta property="og:image" content="https://assets.poap.xyz/ae80dd44-a4b8-4a90-9d76-2da198a1f6fc.png">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,7 +21,8 @@
                             DEFAULT: '#00b050', 
                             dark: '#008a3e', 
                             light: '#e6f7ed', 
-                            text: '#00441b' 
+                            text: '#00441b',
+                            dao: '#0d1117' 
                         }
                     },
                     animation: {
@@ -31,47 +32,51 @@
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
                         slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                    },
+                    boxShadow: {
+                        'dao': '0 4px 20px -2px rgba(0, 176, 80, 0.25)', 
                     }
                 }
             }
         }
     </script>
     
-    <!-- Librerías Web3Auth y Ethers (Versiones Estables) -->
+    <!-- Librerías Web3Auth y Ethers -->
     <script src="https://cdn.jsdelivr.net/npm/@web3auth/modal@9.4.2/dist/modal.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@web3auth/base@9.4.2/dist/base.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@web3auth/ethereum-provider@9.4.2/dist/ethereumProvider.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     
     <!-- Favicon -->
-    <link rel="icon" href="https://assets.poap.xyz/f7d50791-1f25-47f7-978c-b2c9fd7ad13d.png">
+    <link rel="icon" href="https://assets.poap.xyz/ae80dd44-a4b8-4a90-9d76-2da198a1f6fc.png">
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 flex flex-col min-h-screen selection:bg-brand selection:text-white">
 
     <!-- ENCABEZADO -->
-    <nav class="bg-white shadow-md border-b-4 border-brand sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <img src="https://assets.poap.xyz/f7d50791-1f25-47f7-978c-b2c9fd7ad13d.png" alt="Logo Movida SST" class="w-16 h-16 rounded-full shadow-sm border border-gray-100 p-0.5">
+    <nav class="bg-white shadow-md border-b-4 border-brand sticky top-0 z-50 backdrop-blur-md bg-opacity-95 transition-all">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <!-- LOGO AUMENTADO -->
+                <img src="https://assets.poap.xyz/ae80dd44-a4b8-4a90-9d76-2da198a1f6fc.png" alt="Logo Movida SST" class="w-24 h-24 md:w-28 md:h-28 rounded-full shadow-lg border-2 border-gray-100 p-0.5 bg-white transform hover:scale-105 transition-transform duration-300">
                 <div class="text-center md:text-left">
-                    <h1 class="font-bold text-lg md:text-xl text-gray-800 leading-none tracking-tight">La Movida de SST <br><span class="text-brand">DAO Network</span></h1>
+                    <h1 class="font-bold text-2xl md:text-3xl text-gray-800 leading-none tracking-tight">La Movida de SST <br><span class="text-brand font-extrabold">DAO Network</span></h1>
                 </div>
             </div>
             <!-- Identidad de Marca Desktop -->
-            <div class="text-xs text-gray-500 font-semibold hidden md:block text-right border-l-2 border-gray-100 pl-4">
+            <div class="text-sm text-gray-500 font-semibold hidden md:block text-right border-l-4 border-brand pl-4 py-1">
                 🚀 La Primera Comunidad Blockchain<br>de SST en Latinoamérica
             </div>
         </div>
     </nav>
 
     <!-- CONTENIDO PRINCIPAL -->
-    <main class="container mx-auto px-4 py-8 flex flex-col items-center flex-grow max-w-2xl relative">
+    <main class="container mx-auto px-4 py-8 flex flex-col items-center flex-grow max-w-2xl relative w-full">
 
-        <!-- NOTIFICACIÓN DE ERROR FLOTANTE (Mejorada para Debugging) -->
+        <!-- NOTIFICACIÓN DE ERROR -->
         <div id="errorMessage" class="hidden fixed top-24 left-1/2 transform -translate-x-1/2 w-11/12 max-w-lg bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-2xl z-[60] animate-fade-in flex flex-col gap-2">
             <div class="flex justify-between items-start">
                 <div>
-                    <strong class="block font-bold text-sm">⚠️ Aviso de Configuración:</strong>
+                    <strong class="block font-bold text-sm">⚠️ Aviso del Sistema:</strong>
                     <span id="errorText" class="text-xs block mt-1 break-words">Error desconocido.</span>
                 </div>
                 <button onclick="document.getElementById('errorMessage').classList.add('hidden')" class="text-red-400 hover:text-red-700 font-bold ml-3 text-xl leading-none">&times;</button>
@@ -81,25 +86,23 @@
         <!-- 1. PANTALLA DE LOGIN / BIENVENIDA -->
         <div id="loginSection" class="w-full animate-fade-in">
             
-            <!-- Tarjeta Principal -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 mb-8">
-                <div class="bg-brand-light p-6 text-center border-b border-green-100">
-                    <span class="bg-green-200 text-green-800 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider mb-2 inline-block shadow-sm">Pioneros en Innovación</span>
-                    <h2 class="text-2xl font-bold text-brand-text mb-2">Portal de Identidad Digital</h2>
-                    <p class="text-gray-600 text-sm leading-relaxed">
-                        Bienvenido al ecosistema. Genera tu <strong>Wallet Segura</strong> para validar tu trayectoria profesional de forma inmutable.
+            <!-- Tarjeta Principal de Ingreso -->
+            <div class="bg-white rounded-2xl shadow-dao overflow-hidden border border-gray-100 mb-6 transform transition-all hover:shadow-xl w-full">
+                <div class="bg-gradient-to-r from-brand-light to-white p-6 text-center border-b border-green-100">
+                    <span class="bg-green-100 text-brand-dark text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider mb-2 inline-block shadow-sm border border-green-200">Pioneros en Innovación</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-brand-text mb-2">Portal de Identidad Digital</h2>
+                    <p class="text-gray-600 text-sm md:text-base leading-relaxed max-w-md mx-auto">
+                        Genera tu <strong>Wallet Segura</strong> para recibir tus insignias y certificados con tecnología blockchain.
                     </p>
                 </div>
 
-                <div class="p-8">
-                    <!-- Botón de Acción -->
+                <div class="p-6 md:p-8">
                     <button id="btnLogin" onclick="login()" disabled class="w-full bg-gray-100 text-gray-400 font-bold py-4 px-6 rounded-xl cursor-not-allowed flex justify-center items-center gap-3 transition-all duration-300 transform shadow-sm border border-gray-200">
-                        <span id="btnText" class="flex items-center gap-2 text-sm">
+                        <span id="btnText" class="flex items-center gap-2 text-sm md:text-base">
                             <svg class="animate-spin h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                             Cargando Sistema...
                         </span>
                     </button>
-                    
                     <p class="text-center text-xs text-gray-400 mt-4 flex items-center justify-center gap-1">
                         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
                         Acceso seguro con Google • Sin contraseñas nuevas
@@ -107,33 +110,40 @@
                 </div>
             </div>
 
-            <!-- Guía Rápida -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8 relative">
-                <h3 class="font-bold text-gray-700 mb-4 flex items-center gap-2 text-sm uppercase tracking-wide border-b pb-2">
-                    Instrucciones Rápidas
+            <!-- TARJETA "VE TUS INSIGNIAS" -->
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-xl shadow-md p-6 mb-8 text-center text-white relative overflow-hidden group w-full">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-brand opacity-20 rounded-full -mr-16 -mt-16 blur-xl group-hover:opacity-30 transition-opacity"></div>
+                
+                <h3 class="font-bold text-lg md:text-xl mb-2 relative z-10">¿Ya tienes insignias?</h3>
+                <p class="text-slate-300 text-sm mb-4 relative z-10">Accede a la vitrina oficial para ver tus logros.</p>
+                
+                <a href="https://insignias.movidasst.com/" target="_blank" class="inline-flex items-center gap-2 bg-brand hover:bg-brand-dark text-white font-bold py-3 px-8 rounded-lg transition-transform transform active:scale-95 shadow-lg border border-transparent hover:border-green-400 relative z-10 w-full md:w-auto justify-center">
+                    <span>🏅</span> Ve tus Insignias
+                </a>
+            </div>
+
+            <!-- EXPLICACIÓN DIDÁCTICA -->
+            <div class="bg-blue-50 rounded-xl shadow-sm border border-blue-100 p-6 mb-8 relative w-full">
+                <h3 class="font-bold text-blue-800 mb-4 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-blue-200 pb-2">
+                    💡 ¿Es seguro compartir mi Wallet?
                 </h3>
-                <div class="space-y-4">
-                    <div class="flex gap-3 items-start">
-                        <div class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</div>
-                        <div>
-                            <strong class="text-gray-800 text-xs block">Ingresa</strong>
-                            <p class="text-[11px] text-gray-500">Usa tu cuenta Google para crear tu dirección única.</p>
-                        </div>
+                <div class="space-y-4 text-xs md:text-sm text-blue-900 leading-relaxed">
+                    <p>
+                        <strong>¡Sí, totalmente!</strong> La dirección que generarás (empieza por 0x...) es tu <strong>Identidad Pública</strong>, similar a tu nombre de usuario en una red social.
+                    </p>
+                    <div class="flex flex-col gap-3 md:flex-row">
+                         <div class="bg-white p-4 rounded-lg border border-blue-100 flex-1 shadow-sm">
+                            <strong class="block text-blue-700 mb-1 text-sm">📬 Como tu Email</strong>
+                            <p class="text-gray-500">Sirve para que la gente sepa <strong>dónde enviarte</strong> mensajes o premios. No sirve para entrar a tu cuenta.</p>
+                         </div>
+                         <div class="bg-white p-4 rounded-lg border border-blue-100 flex-1 shadow-sm">
+                            <strong class="block text-blue-700 mb-1 text-sm">🏦 Como tu CBU/IBAN</strong>
+                            <p class="text-gray-500">Es tu número de cuenta para <strong>recibir</strong> depósitos (certificados). Compartirlo no permite que nadie saque nada.</p>
+                         </div>
                     </div>
-                    <div class="flex gap-3 items-start">
-                        <div class="w-6 h-6 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</div>
-                        <div>
-                            <strong class="text-gray-800 text-xs block">Copia</strong>
-                            <p class="text-[11px] text-gray-500">Obtendrás un código (tu dirección 0x...). Cópialo.</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-3 items-start">
-                        <div class="w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
-                        <div>
-                            <strong class="text-gray-800 text-xs block">Registra</strong>
-                            <p class="text-[11px] text-gray-500">Pégalo en el formulario para autorizar los envíos.</p>
-                        </div>
-                    </div>
+                    <p class="font-bold mt-2 text-center text-blue-800 border-t border-blue-200 pt-3">
+                        ✅ Solo necesitamos tu dirección pública para enviarte tus insignias. Nunca te pediremos contraseñas.
+                    </p>
                 </div>
             </div>
         </div>
@@ -142,39 +152,39 @@
         <div id="loaderSection" class="hidden flex flex-col items-center mt-20 text-center flex-grow justify-center w-full animate-fade-in">
             <div class="relative w-24 h-24 mb-6">
                 <div class="absolute top-0 left-0 w-full h-full border-4 border-gray-100 rounded-full"></div>
-                <div class="absolute top-0 left-0 w-full h-full border-4 border-brand rounded-full animate-spin border-t-transparent"></div>
+                <div class="absolute top-0 left-0 w-full h-full border-4 border-brand rounded-full animate-spin border-t-transparent shadow-lg"></div>
                 <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center text-3xl animate-pulse">🔗</div>
             </div>
-            <h3 class="text-xl font-bold text-brand-text">Verificando Identidad</h3>
-            <p class="text-gray-500 mt-2 text-sm">Conectando con la red segura de Polygon...</p>
+            <h3 class="text-xl font-bold text-brand-text">Conectando a la DAO</h3>
+            <p class="text-gray-500 mt-2 text-sm">Estableciendo enlace seguro con Polygon Network...</p>
         </div>
 
         <!-- 3. DASHBOARD (PASO A PASO) -->
         <div id="dashboardSection" class="hidden w-full animate-slide-up">
             
             <!-- Header Usuario -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex items-center gap-4 relative overflow-hidden">
-                <div class="absolute right-0 top-0 w-32 h-32 bg-brand-light rounded-full -mr-10 -mt-10 opacity-50"></div>
-                <img id="userImage" src="" class="w-16 h-16 rounded-full border-2 border-brand bg-gray-100 relative z-10 object-cover">
+            <div class="bg-gradient-to-r from-white to-brand-light rounded-xl shadow-dao border border-green-100 p-4 mb-6 flex items-center gap-4 relative overflow-hidden w-full">
+                <div class="absolute right-0 top-0 w-32 h-32 bg-brand opacity-10 rounded-full -mr-10 -mt-10 blur-xl"></div>
+                <img id="userImage" src="" class="w-16 h-16 rounded-full border-2 border-brand bg-white relative z-10 object-cover shadow-sm flex-shrink-0">
                 <div class="relative z-10 min-w-0">
                     <p class="text-[10px] text-brand font-bold uppercase tracking-wider mb-0.5 flex items-center gap-1">
-                        <span class="w-2 h-2 bg-brand rounded-full animate-pulse"></span> Verificado
+                        <span class="w-2 h-2 bg-brand rounded-full animate-pulse shadow-[0_0_10px_#00b050]"></span> Identidad Verificada
                     </p>
                     <p id="userName" class="font-bold text-gray-800 text-lg leading-tight truncate">Usuario</p>
-                    <p id="userEmail" class="text-xs text-gray-500 truncate">...</p>
+                    <p id="userEmail" class="text-xs text-gray-500 truncate font-mono">...</p>
                 </div>
             </div>
 
             <div class="mb-4 text-center">
-                <h3 class="text-sm font-bold text-gray-500 uppercase tracking-widest">Panel de Control</h3>
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Panel de Control</h3>
             </div>
 
             <!-- PASO 1: COPIAR -->
-            <div class="bg-white rounded-xl shadow-md border-l-4 border-blue-500 p-5 mb-4 relative overflow-hidden">
+            <div class="bg-white rounded-xl shadow-md border-l-4 border-blue-500 p-5 mb-4 relative overflow-hidden group hover:shadow-lg transition-shadow w-full">
                 <div class="flex justify-between items-center mb-3">
                     <h3 class="font-bold text-blue-800 text-sm flex items-center gap-2">
-                        <span class="bg-blue-100 text-blue-600 w-5 h-5 rounded flex items-center justify-center text-xs">1</span>
-                        Tu Dirección Pública
+                        <span class="bg-blue-100 text-blue-600 w-6 h-6 rounded-md flex items-center justify-center text-xs shadow-sm">1</span>
+                        Tu Dirección Pública (Segura)
                     </h3>
                 </div>
                 
@@ -182,59 +192,57 @@
                 <div class="bg-slate-900 rounded-lg p-1 cursor-pointer active:scale-[0.98] transition-transform duration-100 group" onclick="copyAddress()">
                     <div class="border border-slate-700 rounded p-3 flex items-center justify-between bg-slate-900 relative">
                         <div class="text-left w-full overflow-hidden mr-2">
-                            <p class="text-[10px] text-slate-400 mb-0.5 uppercase font-mono">Tap to copy</p>
+                            <p class="text-[10px] text-slate-400 mb-0.5 uppercase font-mono tracking-wide">Toca para copiar tu ID Público</p>
                             <code id="walletAddress" class="text-brand font-mono text-sm truncate block w-full select-all">0x...</code>
                         </div>
-                        <div class="text-slate-400 group-hover:text-white transition-colors">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        <div class="text-slate-400 group-hover:text-white transition-colors bg-slate-800 p-1.5 rounded flex-shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                         </div>
                     </div>
                 </div>
                 <!-- Feedback visual de copiado -->
                 <div id="copyFeedback" class="h-4 mt-1 flex justify-center items-center opacity-0 transition-opacity duration-300">
-                    <span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 rounded-full border border-green-200">✅ ¡Dirección copiada!</span>
+                    <span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 rounded-full border border-green-200 shadow-sm">✅ ¡Dirección copiada!</span>
                 </div>
+                <p class="text-[10px] text-gray-400 mt-2 italic text-center">Este código es público, puedes compartirlo sin miedo.</p>
             </div>
 
             <!-- PASO 2: PEGAR (OBLIGATORIO) -->
-            <div class="bg-yellow-50 rounded-xl shadow-md border-l-4 border-yellow-500 p-5 mb-4">
+            <div class="bg-white rounded-xl shadow-md border-l-4 border-yellow-400 p-5 mb-4 hover:shadow-lg transition-shadow w-full">
                 <div class="flex justify-between items-center mb-2">
-                    <h3 class="font-bold text-yellow-900 text-sm flex items-center gap-2">
-                        <span class="bg-yellow-200 text-yellow-800 w-5 h-5 rounded flex items-center justify-center text-xs">2</span>
+                    <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                        <span class="bg-yellow-100 text-yellow-700 w-6 h-6 rounded-md flex items-center justify-center text-xs shadow-sm">2</span>
                         Confirmar Envío
                     </h3>
-                    <span class="bg-yellow-200 text-yellow-900 text-[9px] px-2 py-0.5 rounded-full font-bold uppercase">Requerido</span>
+                    <span class="bg-yellow-100 text-yellow-800 text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide border border-yellow-200">Requerido</span>
                 </div>
-                <p class="text-xs text-gray-700 mb-4 leading-relaxed">
-                    Pega la dirección que acabas de copiar en el formulario oficial para autorizar la recepción de tus insignias.
+                <p class="text-xs text-gray-600 mb-4 leading-relaxed">
+                    <strong>¡Tranquilo!</strong> Pega tu dirección pública en el formulario para que sepamos a dónde enviar tus certificaciones. Es como darnos tu email para enviarte un correo.
                 </p>
-                <a id="googleFormLink" href="#" target="_blank" class="block w-full bg-brand hover:bg-brand-dark text-white font-bold py-3.5 rounded-lg shadow-sm hover:shadow-md transform transition active:translate-y-0.5 text-center text-sm flex items-center justify-center gap-2 group">
+                <a id="googleFormLink" href="#" target="_blank" class="block w-full bg-brand hover:bg-brand-dark text-white font-bold py-3.5 rounded-lg shadow-md hover:shadow-lg transform transition active:translate-y-0.5 text-center text-sm flex items-center justify-center gap-2 group border-b-4 border-brand-dark hover:border-brand">
                     <span>📝</span> 
                     <span class="group-hover:underline">Ir al Formulario y Pegar</span>
                 </a>
             </div>
 
-            <!-- PASO 3: VISUALIZAR (POAP) -->
-            <div class="bg-purple-50 rounded-xl shadow-md border-l-4 border-purple-500 p-5 mb-8">
-                <h3 class="font-bold text-purple-900 text-sm mb-3 flex items-center gap-2">
-                    <span class="bg-purple-200 text-purple-800 w-5 h-5 rounded flex items-center justify-center text-xs">3</span>
+            <!-- PASO 3: VISUALIZAR (INSIGNIAS) -->
+            <div class="bg-white rounded-xl shadow-md border-l-4 border-purple-600 p-5 mb-8 hover:shadow-lg transition-shadow w-full">
+                <h3 class="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2">
+                    <span class="bg-purple-100 text-purple-700 w-6 h-6 rounded-md flex items-center justify-center text-xs shadow-sm">3</span>
                     Tu Vitrina Digital
                 </h3>
+                <p class="text-xs text-gray-600 mb-4">
+                    Accede a tu perfil público y muestra tus logros en la DAO.
+                </p>
                 
-                <div class="grid grid-cols-2 gap-3">
-                    <a href="https://poap.xyz/" target="_blank" class="col-span-1 bg-white border border-purple-200 text-purple-700 hover:bg-purple-50 font-bold py-3 rounded-lg transition text-center text-xs flex flex-col items-center justify-center gap-1 shadow-sm h-full">
-                        <span class="text-lg">🌐</span>
-                        <span>Crear Cuenta POAP</span>
-                    </a>
-                    <a id="viewPoapsLink" href="#" target="_blank" class="col-span-1 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition text-center text-xs flex flex-col items-center justify-center gap-1 shadow-md h-full">
-                        <span class="text-lg">👀</span>
-                        <span>Ver mi Colección</span>
-                    </a>
-                </div>
+                <a href="https://insignias.movidasst.com/" target="_blank" class="block w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-lg transition text-center text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-xl border border-slate-700 group">
+                    <span class="text-lg group-hover:scale-110 transition-transform">🏅</span>
+                    <span>Ver mis Insignias</span>
+                </a>
             </div>
             
             <div class="text-center mb-12">
-                <button onclick="logout()" class="text-gray-400 text-xs hover:text-red-500 underline py-2 px-4 rounded hover:bg-red-50 transition">
+                <button onclick="logout()" class="text-gray-400 text-xs hover:text-red-500 underline py-2 px-4 rounded hover:bg-red-50 transition font-medium">
                     Cerrar Sesión Segura
                 </button>
             </div>
@@ -243,27 +251,27 @@
     </main>
 
     <!-- PIE DE PÁGINA -->
-    <footer class="mt-auto pt-6 pb-8 border-t border-gray-200 w-full text-center bg-slate-50">
-        <p class="text-xs text-gray-400 mb-3">Elaborado por <span class="font-bold text-gray-600">David Linares Brea</span></p>
+    <footer class="mt-auto pt-6 pb-8 border-t border-gray-200 w-full text-center bg-white">
+        <p class="text-xs text-gray-400 mb-3">Desarrollado por <span class="font-bold text-gray-600">David Linares Brea</span></p>
         
-        <a href="https://ud.me/movidasst.ask" target="_blank" class="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-blue-100 text-xs text-blue-700 hover:border-blue-300 transition mb-3 shadow-sm group">
+        <a href="https://ud.me/movidasst.ask" target="_blank" class="inline-flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-full border border-gray-200 text-xs text-gray-600 hover:border-brand hover:text-brand transition mb-3 shadow-sm group">
             <span class="text-lg">💎</span> 
             <span class="font-semibold group-hover:underline">Identidad DAO Verificada</span>
         </a>
         <br>
-        <a href="mailto:movidasst@gmail.com" class="text-[10px] text-gray-400 hover:text-brand transition">movidasst@gmail.com</a>
+        <a href="mailto:movidasst@gmail.com" class="text-[10px] text-gray-400 hover:text-brand transition font-mono">movidasst@gmail.com</a>
     </footer>
 
     <script>
         // ================= CONFIGURACIÓN =================
         const CONFIG = {
-            LINK_FORMULARIO: "https://forms.gle/YonRRv9MAtDieYFg8",
+            // NUEVO LINK DEL FORMULARIO SOLICITADO
+            LINK_FORMULARIO: "https://forms.gle/3eg3mCU2yDtSXdXs5",
             
             // Client ID Verificado (Nuevo para Mainnet)
             CLIENT_ID: "BFlFKDs_QiNYNtU7iGzjUGIvMU0SNHBlKG0vqimhtaSd7PVtA2sPldVA_ySs3n3rLcgz30bZN2XRu1z1IhEsxTY",
             
-            // --- ¡IMPORTANTE! VERIFICA ESTO EN TU DASHBOARD ---
-            // Cambiado a sapphire_mainnet para producción
+            // Producción
             WEB3AUTH_NETWORK: "sapphire_mainnet", 
 
             CHAIN: { 
@@ -302,8 +310,9 @@
                     uiConfig: {
                         appName: "La Movida de SST DAO",
                         theme: "light",
-                        logoLight: "https://assets.poap.xyz/f7d50791-1f25-47f7-978c-b2c9fd7ad13d.png",
-                        logoDark: "https://assets.poap.xyz/f7d50791-1f25-47f7-978c-b2c9fd7ad13d.png",
+                        // Nuevo Logo actualizado
+                        logoLight: "https://assets.poap.xyz/ae80dd44-a4b8-4a90-9d76-2da198a1f6fc.png",
+                        logoDark: "https://assets.poap.xyz/ae80dd44-a4b8-4a90-9d76-2da198a1f6fc.png",
                         defaultLanguage: "es",
                         primaryButton: "socialLogin"
                     }
@@ -325,7 +334,6 @@
                 let msg = "No se pudo iniciar el sistema. " + error.message;
                 const errorStr = error.message.toLowerCase();
                 
-                // Detectar error de Whitelist / Configuración / RED
                 if (errorStr.includes("project configurations") || errorStr.includes("wallet is not ready")) {
                     const currentDomain = window.location.origin;
                     msg = `
@@ -333,8 +341,7 @@
                         Tu Whitelist está bien, pero la RED no coincide.<br>
                         <ul class="list-disc pl-4 mt-2 text-[11px] text-left text-gray-700 space-y-1">
                             <li>El código usa: <code>${CONFIG.WEB3AUTH_NETWORK}</code></li>
-                            <li>Tu Dashboard tiene otra red seleccionada (probablemente <code>sapphire_devnet</code>).</li>
-                            <li><strong>Solución:</strong> Cambia la línea 372 del código para que coincida.</li>
+                            <li>Tu Dashboard tiene otra red seleccionada.</li>
                         </ul>
                     `;
                 }
@@ -350,11 +357,12 @@
             if(!btn) return;
 
             btn.disabled = false;
+            // Estilo botón login mejorado
             btn.classList.remove("bg-gray-100", "text-gray-400", "cursor-not-allowed", "border-gray-200");
-            btn.classList.add("bg-brand", "hover:bg-brand-dark", "text-white", "shadow-lg", "hover:scale-[1.02]", "border-transparent");
+            btn.classList.add("bg-brand", "hover:bg-brand-dark", "text-white", "shadow-dao", "hover:scale-[1.02]", "border-transparent");
             
             txt.innerHTML = `
-                <div class="bg-white p-1 rounded-full w-6 h-6 flex items-center justify-center">
+                <div class="bg-white p-1 rounded-full w-6 h-6 flex items-center justify-center shadow-sm">
                     <img src="https://img.icons8.com/color/48/google-logo.png" alt="G">
                 </div>
                 <span class="font-bold text-lg">Ingresar con Google</span>
@@ -372,9 +380,6 @@
                 hideLoader();
                 if (error.message && !error.message.toLowerCase().includes("user closed")) {
                     let msg = "Error al conectar: " + error.message;
-                    if (msg.includes("project configurations")) {
-                         msg = `<strong>Error de Red.</strong><br>Verifica la variable WEB3AUTH_NETWORK en el código.`;
-                    }
                     mostrarError(msg);
                 }
             }
@@ -392,7 +397,6 @@
                 const avatarUrl = user.profileImage || `https://ui-avatars.com/api/?name=${user.name || 'U'}&background=00b050&color=fff&size=128`;
                 document.getElementById("userImage").src = avatarUrl;
                 document.getElementById("walletAddress").innerText = address;
-                document.getElementById("viewPoapsLink").href = "https://app.poap.xyz/scan/" + address;
 
                 document.getElementById("loaderSection").classList.add("hidden");
                 document.getElementById("loginSection").classList.add("hidden");
