@@ -67,13 +67,15 @@
     <!-- CONTENIDO PRINCIPAL -->
     <main class="container mx-auto px-4 py-8 flex flex-col items-center flex-grow max-w-2xl relative">
 
-        <!-- NOTIFICACIÓN DE ERROR FLOTANTE -->
-        <div id="errorMessage" class="hidden fixed top-24 left-1/2 transform -translate-x-1/2 w-11/12 max-w-lg bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-2xl z-[60] animate-fade-in flex justify-between items-start">
-            <div>
-                <strong class="block font-bold text-sm">Aviso del Sistema:</strong>
-                <span id="errorText" class="text-xs block mt-1 break-words">Error desconocido.</span>
+        <!-- NOTIFICACIÓN DE ERROR FLOTANTE (Mejorada para Debugging) -->
+        <div id="errorMessage" class="hidden fixed top-24 left-1/2 transform -translate-x-1/2 w-11/12 max-w-lg bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-2xl z-[60] animate-fade-in flex flex-col gap-2">
+            <div class="flex justify-between items-start">
+                <div>
+                    <strong class="block font-bold text-sm">⚠️ Aviso de Configuración:</strong>
+                    <span id="errorText" class="text-xs block mt-1 break-words">Error desconocido.</span>
+                </div>
+                <button onclick="document.getElementById('errorMessage').classList.add('hidden')" class="text-red-400 hover:text-red-700 font-bold ml-3 text-xl leading-none">&times;</button>
             </div>
-            <button onclick="document.getElementById('errorMessage').classList.add('hidden')" class="text-red-400 hover:text-red-700 font-bold ml-3 text-xl leading-none">&times;</button>
         </div>
 
         <!-- 1. PANTALLA DE LOGIN / BIENVENIDA -->
@@ -256,8 +258,15 @@
         // ================= CONFIGURACIÓN =================
         const CONFIG = {
             LINK_FORMULARIO: "https://forms.gle/YonRRv9MAtDieYFg8",
-            // Client ID Original del usuario
+            
+            // Client ID Verificado
             CLIENT_ID: "BDX3ujFfWCx4juzUyTS21GrYMI1yge8Qea0z_DiUqX5LnLFWX_X4ME-TAy_mQX406gMrSozYGr69xiAL-5yVhBo",
+            
+            // --- ¡IMPORTANTE! VERIFICA ESTO EN TU DASHBOARD ---
+            // Si la whitelist está bien, el error es porque esta variable no coincide con tu Dashboard.
+            // Prueba cambiar a "sapphire_devnet" si estás probando, o "mainnet" si es cuenta antigua.
+            WEB3AUTH_NETWORK: "sapphire_devnet", 
+
             CHAIN: { 
                 chainNamespace: "eip155", 
                 chainId: "0x89", // Polygon Mainnet
@@ -272,7 +281,6 @@
 
         let web3auth = null;
 
-        // IMPORTANTE: Esperamos a que 'load' se dispare para asegurar que las librerías CDN existen
         window.addEventListener('load', async () => {
             document.getElementById("googleFormLink").href = CONFIG.LINK_FORMULARIO;
             await initApp();
@@ -280,7 +288,6 @@
 
         async function initApp() {
             try {
-                // Verificación de seguridad: ¿Existen las librerías?
                 if (!window.EthereumProvider || !window.Modal) {
                     throw new Error("Error de red: Librerías Web3 no cargadas. Por favor recarga la página.");
                 }
@@ -291,7 +298,7 @@
 
                 web3auth = new window.Modal.Web3Auth({
                     clientId: CONFIG.CLIENT_ID,
-                    web3AuthNetwork: "sapphire_mainnet",
+                    web3AuthNetwork: CONFIG.WEB3AUTH_NETWORK, // Usando la variable configurada arriba
                     privateKeyProvider,
                     uiConfig: {
                         appName: "La Movida de SST DAO",
@@ -305,25 +312,35 @@
 
                 await web3auth.initModal();
                 
-                // Si el usuario ya estaba logueado, saltamos directo al contenido
                 if (web3auth.connected) {
                     showLoader();
                     await loadUserData();
                 } else {
-                    activarBoton(); // Habilita el botón de login
+                    activarBoton();
                 }
 
             } catch (error) {
                 console.error("Init Error:", error);
                 
-                // MANEJO DE ERROR ESPECÍFICO DE WHITELIST
+                // DETECCIÓN INTELIGENTE DE ERROR
                 let msg = "No se pudo iniciar el sistema. " + error.message;
-                if (error.message.includes("project configurations") || error.message.includes("Wallet is not ready")) {
-                    msg = `⚠️ <strong>Dominio no autorizado.</strong><br>El entorno actual no está en la Whitelist de Web3Auth.<br><span class="text-[10px] text-red-500 font-mono mt-1 block bg-red-50 p-1 rounded">Origen: ${window.location.hostname}</span>`;
+                const errorStr = error.message.toLowerCase();
+                
+                // Detectar error de Whitelist / Configuración / RED
+                if (errorStr.includes("project configurations") || errorStr.includes("wallet is not ready")) {
+                    const currentDomain = window.location.origin;
+                    msg = `
+                        <strong class="text-red-800 text-sm">⚠️ Configuración de Red Incorrecta</strong><br>
+                        Tu Whitelist está bien, pero la RED no coincide.<br>
+                        <ul class="list-disc pl-4 mt-2 text-[11px] text-left text-gray-700 space-y-1">
+                            <li>El código usa: <code>${CONFIG.WEB3AUTH_NETWORK}</code></li>
+                            <li>Tu Dashboard tiene otra red seleccionada (ej: <code>sapphire_devnet</code>).</li>
+                            <li><strong>Solución:</strong> Cambia la línea 372 del código para que coincida.</li>
+                        </ul>
+                    `;
                 }
 
                 mostrarError(msg);
-                // Activamos el botón de todos modos para permitir reintento si el usuario arregla la whitelist
                 activarBoton();
             }
         }
@@ -334,12 +351,9 @@
             if(!btn) return;
 
             btn.disabled = false;
-            // Quitamos estilos de deshabilitado
             btn.classList.remove("bg-gray-100", "text-gray-400", "cursor-not-allowed", "border-gray-200");
-            // Agregamos estilos de marca
             btn.classList.add("bg-brand", "hover:bg-brand-dark", "text-white", "shadow-lg", "hover:scale-[1.02]", "border-transparent");
             
-            // Icono Google y Texto
             txt.innerHTML = `
                 <div class="bg-white p-1 rounded-full w-6 h-6 flex items-center justify-center">
                     <img src="https://img.icons8.com/color/48/google-logo.png" alt="G">
@@ -357,11 +371,10 @@
             } catch (error) {
                 console.error("Login Error:", error);
                 hideLoader();
-                // Si el usuario cierra la ventana, no mostramos error rojo, solo volvemos al inicio
                 if (error.message && !error.message.toLowerCase().includes("user closed")) {
                     let msg = "Error al conectar: " + error.message;
                     if (msg.includes("project configurations")) {
-                        msg = "Error de dominio no autorizado (Whitelist).";
+                         msg = `<strong>Error de Red.</strong><br>Verifica la variable WEB3AUTH_NETWORK en el código.`;
                     }
                     mostrarError(msg);
                 }
@@ -370,27 +383,18 @@
 
         async function loadUserData() {
             try {
-                // Obtenemos datos del usuario (Web3Auth)
                 const user = await web3auth.getUserInfo();
-                
-                // Obtenemos dirección ETH (Ethers.js)
                 const web3Provider = new ethers.providers.Web3Provider(web3auth.provider);
                 const signer = web3Provider.getSigner();
                 const address = await signer.getAddress();
 
-                // Llenamos la UI
                 document.getElementById("userName").innerText = user.name || "Miembro DAO";
                 document.getElementById("userEmail").innerText = user.email || "Email Privado";
-                // Avatar fallback con iniciales si no hay foto
                 const avatarUrl = user.profileImage || `https://ui-avatars.com/api/?name=${user.name || 'U'}&background=00b050&color=fff&size=128`;
                 document.getElementById("userImage").src = avatarUrl;
-                
                 document.getElementById("walletAddress").innerText = address;
-                
-                // Link dinámico para ver colección
                 document.getElementById("viewPoapsLink").href = "https://app.poap.xyz/scan/" + address;
 
-                // Transición de pantallas
                 document.getElementById("loaderSection").classList.add("hidden");
                 document.getElementById("loginSection").classList.add("hidden");
                 document.getElementById("dashboardSection").classList.remove("hidden");
@@ -399,39 +403,29 @@
                 console.error("Data Load Error:", error);
                 hideLoader();
                 mostrarError("Error cargando perfil. Intenta recargar.");
-                // Si falla la carga de datos, hacemos logout para limpiar estado
                 logout(); 
             }
         }
 
         async function logout() {
             if (!web3auth) return;
-            try {
-                await web3auth.logout();
-            } catch(e) { console.log(e); }
+            try { await web3auth.logout(); } catch(e) { console.log(e); }
             location.reload();
         }
 
-        // === LÓGICA DE COPIADO ROBUSTO (Móvil + Desktop) ===
         function copyAddress() {
             const addressElem = document.getElementById("walletAddress");
             const addressText = addressElem.innerText;
             const feedback = document.getElementById("copyFeedback");
 
-            // Función interna para mostrar éxito
             const showSuccess = () => {
                 feedback.classList.remove("opacity-0");
-                // Resetear animación después de 2s
                 setTimeout(() => feedback.classList.add("opacity-0"), 2000);
             };
 
-            // Intento 1: API Moderna (Navigator Clipboard)
             if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(addressText)
-                    .then(showSuccess)
-                    .catch(() => fallbackCopy(addressText, showSuccess)); // Si falla, vamos al fallback
+                navigator.clipboard.writeText(addressText).then(showSuccess).catch(() => fallbackCopy(addressText, showSuccess));
             } else {
-                // Intento 2: Fallback para móviles viejos o contextos no seguros
                 fallbackCopy(addressText, showSuccess);
             }
         }
@@ -440,27 +434,17 @@
             try {
                 const textArea = document.createElement("textarea");
                 textArea.value = text;
-                
-                // Aseguramos que el textarea no sea visible pero sea parte del DOM
                 textArea.style.position = "fixed";
                 textArea.style.left = "-9999px";
                 textArea.style.top = "0";
                 document.body.appendChild(textArea);
-                
                 textArea.focus();
                 textArea.select();
-                
                 const successful = document.execCommand('copy');
                 document.body.removeChild(textArea);
-                
-                if (successful) {
-                    successCallback();
-                } else {
-                    throw new Error("ExecCommand falló");
-                }
+                if (successful) successCallback();
             } catch (err) {
-                console.error('Fallback copy failed', err);
-                mostrarError("No se pudo copiar automáticamente. Por favor selecciona el texto y copia manualmente.");
+                mostrarError("No se pudo copiar automáticamente.");
             }
         }
 
@@ -479,8 +463,6 @@
             const el = document.getElementById("errorMessage");
             document.getElementById("errorText").innerHTML = msg;
             el.classList.remove("hidden");
-            // Auto-ocultar después de 10 segundos para dar tiempo a leer el dominio
-            setTimeout(() => el.classList.add("hidden"), 10000);
         }
     </script>
 </body>
