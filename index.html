@@ -56,7 +56,7 @@
     <nav class="bg-white shadow-md border-b-4 border-brand sticky top-0 z-50 backdrop-blur-md bg-opacity-95 transition-all">
         <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <!-- LOGO AUMENTADO -->
+                <!-- LOGO -->
                 <img src="https://assets.poap.xyz/ae80dd44-a4b8-4a90-9d76-2da198a1f6fc.png" alt="Logo Movida SST" class="w-24 h-24 md:w-28 md:h-28 rounded-full shadow-lg border-2 border-gray-100 p-0.5 bg-white transform hover:scale-105 transition-transform duration-300">
                 <div class="text-center md:text-left">
                     <h1 class="font-bold text-2xl md:text-3xl text-gray-800 leading-none tracking-tight">La Movida de SST <br><span class="text-brand font-extrabold">DAO Network</span></h1>
@@ -265,7 +265,6 @@
     <script>
         // ================= CONFIGURACIÓN =================
         const CONFIG = {
-            // NUEVO LINK DEL FORMULARIO SOLICITADO
             LINK_FORMULARIO: "https://forms.gle/3eg3mCU2yDtSXdXs5",
             
             // Client ID Verificado (Nuevo para Mainnet)
@@ -290,6 +289,31 @@
 
         window.addEventListener('load', async () => {
             document.getElementById("googleFormLink").href = CONFIG.LINK_FORMULARIO;
+            
+            // --- DETECTOR DE ENTORNO DE PRUEBA (CHAT PREVIEW) ---
+            // Esto evita que el usuario intente loguearse en el entorno blob: donde falla Web3Auth
+            if (window.location.protocol === 'blob:' || window.location.href.includes('googleusercontent')) {
+                const errorMsg = document.getElementById("errorMessage");
+                const errorText = document.getElementById("errorText");
+                const btnLogin = document.getElementById("btnLogin");
+                
+                errorText.innerHTML = `
+                    <strong>⚠️ Entorno de Prueba Detectado</strong><br>
+                    Estás viendo esto en la vista previa del chat. La autenticación segura <strong>no funciona aquí</strong> (bloqueo 'blob:').<br><br>
+                    <strong>Solución:</strong> Descarga el archivo .html y ejecútalo en tu PC o servidor real.
+                `;
+                errorMsg.classList.remove("hidden");
+                errorMsg.classList.remove("bg-red-50", "border-red-500", "text-red-700");
+                errorMsg.classList.add("bg-yellow-50", "border-yellow-500", "text-yellow-800");
+                
+                // Desactivar botón para evitar frustración
+                if (btnLogin) {
+                    btnLogin.disabled = true;
+                    document.getElementById("btnText").innerText = "Función no disponible en Vista Previa";
+                }
+                return; // Detener inicialización
+            }
+
             await initApp();
         });
 
@@ -305,17 +329,8 @@
 
                 web3auth = new window.Modal.Web3Auth({
                     clientId: CONFIG.CLIENT_ID,
-                    web3AuthNetwork: CONFIG.WEB3AUTH_NETWORK, // Usando la variable configurada arriba
-                    privateKeyProvider,
-                    uiConfig: {
-                        appName: "La Movida de SST DAO",
-                        theme: "light",
-                        // Nuevo Logo actualizado
-                        logoLight: "https://assets.poap.xyz/ae80dd44-a4b8-4a90-9d76-2da198a1f6fc.png",
-                        logoDark: "https://assets.poap.xyz/ae80dd44-a4b8-4a90-9d76-2da198a1f6fc.png",
-                        defaultLanguage: "es",
-                        primaryButton: "socialLogin"
-                    }
+                    web3AuthNetwork: CONFIG.WEB3AUTH_NETWORK, 
+                    privateKeyProvider
                 });
 
                 await web3auth.initModal();
@@ -330,7 +345,6 @@
             } catch (error) {
                 console.error("Init Error:", error);
                 
-                // DETECCIÓN INTELIGENTE DE ERROR
                 let msg = "No se pudo iniciar el sistema. " + error.message;
                 const errorStr = error.message.toLowerCase();
                 
